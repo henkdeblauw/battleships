@@ -9,16 +9,19 @@
   <body>
     <h1>Mission Coreso</h1>
 
-    <div class="game-info">
-      <p id="status">Klik op een veld om aan te vallen!</p>
-      <p>Schepen over: <span id="shipsLeft">9</span></p>
+    <div class="container">
+      <div class="board">
+        <div id="grid" class="grid"></div>
+      </div>
+      <div class="sidebar">
+        <img src="logos/mission-coreso.png" alt="Battleship" class="sidebar-image" />
+        <div class="game-info">
+          <p id="status">Klik op een veld om aan te vallen!</p>
+          <p>Schepen over: <span id="shipsLeft">9</span></p>
+        </div>
+        <button onclick="resetGame()">Nieuw Spel</button>
+      </div>
     </div>
-
-    <div class="board">
-      <div id="grid" class="grid"></div>
-    </div>
-
-    <button onclick="resetGame()">Nieuw Spel</button>
 
     <script src="script.js"></script>
   </body>
