@@ -3,7 +3,7 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #1a1a2e;
+  background-color: #0c1a3d;
   color: white;
 }
 
@@ -126,7 +126,7 @@ button:hover {
 }
 
 .sidebar {
-  background-color: #22223b;
+  background-color: #13131d;
   border-radius: 10px;
   padding: 24px 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
