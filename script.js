@@ -7,10 +7,25 @@ const DEFAULT_SHIPS = [
     { name: 'Torpedobootjager', size: 2, count: 3 }
 ];
 
+// 20 unieke kleuren voor teams (zeer diverse kleuren met uitstekend contrast voor zwarte tekst)
+const TEAM_COLORS = [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA726', '#AB47BC',
+    '#26D0CE', '#FF7043', '#78909C', '#EC407A', '#26C6DA',
+    '#66BB6A', '#FFB74D', '#8D6E63', '#90A4AE', '#EF5350',
+    '#5C6BC0', '#26A69A', '#FFD54F', '#9CCC65', '#F06292'
+];
+
 let gameState = {
     grid: [],
-    ships: []
+    ships: [],
+    currentTeam: null,
+    attempts: 0
 };
+
+let teams = [];
+
+// ANIMATIE SYSTEEM
+let previousTeamPositions = new Map(); // teamId -> {rank, element}
 
 let settings = {
     ships: [...DEFAULT_SHIPS],
@@ -52,6 +67,349 @@ function deleteImageFromStorage() {
     localStorage.removeItem('battleships_custom_image');
 }
 
+// TEAM MANAGEMENT FUNCTIES
+function addTeam(teamName) {
+    if (!teamName || teamName.trim() === '') {
+        alert('Voer een geldige teamnaam in!');
+        return;
+    }
+
+    if (teams.length >= 20) {
+        alert('Maximum aantal teams (20) bereikt!');
+        return;
+    }
+
+    if (teams.some(team => team.name.toLowerCase() === teamName.toLowerCase())) {
+        alert('Er bestaat al een team met deze naam!');
+        return;
+    }
+
+    // Kies een kleur random uit de nog niet-gebruikte kleuren
+    const usedColors = teams.map(team => team.color);
+    const availableColors = TEAM_COLORS.filter(color => !usedColors.includes(color));
+    let color;
+    if (availableColors.length > 0) {
+        color = availableColors[Math.floor(Math.random() * availableColors.length)];
+    } else {
+        color = TEAM_COLORS[Math.floor(Math.random() * TEAM_COLORS.length)];
+    }
+
+    const newTeam = {
+        id: Date.now(),
+        name: teamName.trim(),
+        color: color,
+        points: 0,
+        attempts: 0,
+        gamesPlayed: 0
+    };
+
+    teams.push(newTeam);
+    saveTeamsToStorage();
+    renderTeamsList();
+
+    // Selecteer het nieuwe team automatisch
+    selectTeam(newTeam.id);
+}
+
+function removeTeam(teamId) {
+    if (confirm('Weet je zeker dat je dit team wilt verwijderen?')) {
+        teams = teams.filter(team => team.id !== teamId);
+        saveTeamsToStorage();
+        renderTeamsList();
+
+        // Als het huidige team wordt verwijderd, selecteer dan geen team
+        if (gameState.currentTeam && gameState.currentTeam.id === teamId) {
+            gameState.currentTeam = null;
+            updateTeamSelection();
+        }
+    }
+}
+
+function selectTeam(teamId) {
+    if (teamId === null || teamId === undefined) {
+        gameState.currentTeam = null;
+    } else {
+        gameState.currentTeam = teams.find(team => team.id === teamId) || null;
+    }
+    updateTeamSelection();
+    updateStatus();
+}
+
+function updateTeamSelection() {
+    // Update de teams lijst om de actieve status te tonen
+    renderTeamsList();
+}
+
+function saveTeamsToStorage() {
+    localStorage.setItem('battleships_teams', JSON.stringify(teams));
+}
+
+function loadTeamsFromStorage() {
+    const savedTeams = localStorage.getItem('battleships_teams');
+    if (savedTeams) {
+        try {
+            teams = JSON.parse(savedTeams);
+        } catch (e) {
+            console.error('Error loading teams:', e);
+            teams = [];
+        }
+    }
+}
+
+function renderTeamsList() {
+    const teamsList = document.getElementById('teamsList');
+    if (!teamsList) return;
+
+    // Toon "geen teams" bericht als er geen teams zijn
+    if (teams.length === 0) {
+        teamsList.innerHTML = '<div class="no-teams">Nog geen teams toegevoegd</div>';
+        return;
+    }
+
+    // Sorteer teams op punten (hoogste eerst)
+    const sortedTeams = [...teams].sort((a, b) => b.points - a.points);
+
+    // FLIP: 1. Meet oude posities
+    const itemRects = new Map();
+    const existingElements = Array.from(teamsList.querySelectorAll('.team-list-item'));
+    existingElements.forEach(el => {
+        itemRects.set(parseInt(el.dataset.teamId), el.getBoundingClientRect());
+    });
+
+    // 2. DOM sorteren volgens punten
+    // Maak een document fragment voor performance
+    const fragment = document.createDocumentFragment();
+    sortedTeams.forEach((team, index) => {
+        let el = teamsList.querySelector(`.team-list-item[data-team-id="${team.id}"]`);
+        if (!el) {
+            el = createTeamElement(team, index);
+        }
+        // Update content (rank, punten, pogingen, active)
+        const rankElement = el.querySelector('.team-rank');
+        if (rankElement) {
+            let rankText = `${index + 1}`;
+            if (index === 0) rankText = '🥇';
+            else if (index === 1) rankText = '🥈';
+            else if (index === 2) rankText = '🥉';
+            rankElement.textContent = rankText;
+        }
+        const pointsElement = el.querySelector('.points-value');
+        if (pointsElement) pointsElement.textContent = team.points;
+        const attemptsElement = el.querySelector('.team-attempts');
+        if (attemptsElement) attemptsElement.textContent = `Pogingen: ${team.attempts}`;
+        const teamElement = el.querySelector('.team-item');
+        if (teamElement) {
+            if (gameState.currentTeam && gameState.currentTeam.id === team.id) {
+                teamElement.classList.add('active');
+            } else {
+                teamElement.classList.remove('active');
+                teamElement.style.backgroundColor = team.color;
+            }
+        }
+        fragment.appendChild(el);
+    });
+    // Verwijder oude nodes die niet meer bestaan
+    existingElements.forEach(el => {
+        const teamId = parseInt(el.dataset.teamId);
+        if (!sortedTeams.find(team => team.id === teamId)) {
+            el.remove();
+        }
+    });
+    // Voeg gesorteerde fragment toe
+    teamsList.innerHTML = '';
+    teamsList.appendChild(fragment);
+
+    // 3. Meet nieuwe posities
+    const newElements = Array.from(teamsList.querySelectorAll('.team-list-item'));
+    newElements.forEach(el => {
+        const teamId = parseInt(el.dataset.teamId);
+        const oldRect = itemRects.get(teamId);
+        const newRect = el.getBoundingClientRect();
+        if (oldRect) {
+            const deltaY = oldRect.top - newRect.top;
+            if (deltaY !== 0) {
+                el.style.transform = `translateY(${deltaY}px)`;
+                el.style.transition = 'transform 0s';
+                // Force reflow
+                el.getBoundingClientRect();
+                // 4. Laat het element animeren naar zijn nieuwe plek
+                requestAnimationFrame(() => {
+                    el.style.transform = '';
+                    el.style.transition = 'transform 0.5s cubic-bezier(0.4,0,0.2,1)';
+                });
+                // 5. Reset transition na animatie
+                el.addEventListener('transitionend', function handler() {
+                    el.style.transition = '';
+                    el.removeEventListener('transitionend', handler);
+                });
+            }
+        }
+    });
+}
+
+function createTeamElement(team, index) {
+    const listItem = document.createElement('div');
+    listItem.className = 'team-list-item';
+    listItem.dataset.teamId = team.id;
+    listItem.dataset.rank = index;
+
+    // Maak de rank element met emoji's voor top 3
+    const rankElement = document.createElement('div');
+    rankElement.className = 'team-rank';
+
+    let rankText = `${index + 1}`;
+    if (index === 0) rankText = '🥇';
+    else if (index === 1) rankText = '🥈';
+    else if (index === 2) rankText = '🥉';
+
+    rankElement.textContent = rankText;
+
+    // Maak het team item element
+    const teamElement = document.createElement('div');
+    teamElement.className = 'team-item';
+    if (gameState.currentTeam && gameState.currentTeam.id === team.id) {
+        teamElement.classList.add('active');
+    } else {
+        teamElement.style.backgroundColor = team.color;
+    }
+
+    teamElement.innerHTML = `
+        <div class="team-content">
+            <div class="team-info">
+                <div class="team-name">${team.name}</div>
+                <div class="team-attempts">Pogingen: ${team.attempts}</div>
+            </div>
+            <div class="team-points">
+                <span class="points-value">${team.points}</span>
+            </div>
+        </div>
+    `;
+
+    teamElement.addEventListener('click', () => selectTeam(team.id));
+    teamElement.addEventListener('contextmenu', (e) => showContextMenu(e, team.id));
+
+    listItem.appendChild(rankElement);
+    listItem.appendChild(teamElement);
+
+    return listItem;
+}
+
+function animateTeamMovement(element, oldIndex, newIndex) {
+    // Bereken afstand
+    const itemHeight = element.offsetHeight + 6; // 6px gap
+    const distance = (newIndex - oldIndex) * itemHeight;
+
+    // Voeg animatie klasse toe
+    element.classList.add('animating');
+
+    // Force reflow voor soepele animatie
+    element.offsetHeight;
+
+    // Start animatie
+    element.style.transform = `translateY(${distance}px)`;
+
+    // Reset na animatie
+    setTimeout(() => {
+        element.classList.remove('animating');
+        element.style.transform = '';
+    }, 600);
+}
+
+
+
+function addPointsToCurrentTeam(points) {
+    if (gameState.currentTeam) {
+        gameState.currentTeam.points += points;
+        saveTeamsToStorage();
+        renderTeamsList();
+    }
+}
+
+function incrementAttempts() {
+    gameState.attempts++;
+    if (gameState.currentTeam) {
+        gameState.currentTeam.attempts++;
+        saveTeamsToStorage();
+        renderTeamsList();
+    }
+}
+
+// CONTEXT MENU FUNCTIES
+function showContextMenu(event, teamId) {
+    event.preventDefault();
+
+    // Verwijder bestaand context menu
+    const existingMenu = document.getElementById('contextMenu');
+    if (existingMenu) {
+        existingMenu.remove();
+    }
+
+    // Maak nieuw context menu
+    const contextMenu = document.createElement('div');
+    contextMenu.id = 'contextMenu';
+    contextMenu.className = 'context-menu';
+    contextMenu.innerHTML = `
+        <div class="context-menu-item" onclick="editTeamName(${teamId}); hideContextMenu();">
+            <span>Teamnaam wijzigen</span>
+        </div>
+        <div class="context-menu-item" onclick="removeTeam(${teamId}); hideContextMenu();">
+            <span>Team verwijderen</span>
+        </div>
+    `;
+
+    // Positioneer het menu
+    contextMenu.style.left = event.pageX + 'px';
+    contextMenu.style.top = event.pageY + 'px';
+
+    document.body.appendChild(contextMenu);
+
+    // Verberg menu bij klik buiten menu
+    setTimeout(() => {
+        document.addEventListener('click', hideContextMenu, { once: true });
+    }, 0);
+}
+
+function hideContextMenu() {
+    const contextMenu = document.getElementById('contextMenu');
+    if (contextMenu) {
+        contextMenu.remove();
+    }
+}
+
+function editTeamName(teamId) {
+    const team = teams.find(t => t.id === teamId);
+    if (!team) return;
+
+    const newName = prompt('Voer een nieuwe teamnaam in:', team.name);
+
+    if (newName && newName.trim() !== '') {
+        const trimmedName = newName.trim();
+
+        // Check of de naam al bestaat bij een ander team
+        const existingTeam = teams.find(t => t.id !== teamId && t.name.toLowerCase() === trimmedName.toLowerCase());
+        if (existingTeam) {
+            alert('Er bestaat al een team met deze naam!');
+            return;
+        }
+
+        team.name = trimmedName;
+        saveTeamsToStorage();
+        renderTeamsList();
+        updateTeamSelection();
+    }
+}
+
+
+
+// TEAM TOEVOEGING VIA PROMPT
+function addTeamFromPrompt() {
+    const teamName = prompt('Voer een teamnaam in:');
+
+    if (teamName && teamName.trim() !== '') {
+        addTeam(teamName.trim());
+    }
+}
+
 function loadSidebarImage() {
     const img = document.getElementById('sidebar-image');
     const stored = getImageFromStorage();
@@ -80,7 +438,9 @@ function loadSettings() {
     if (savedBackgroundColor) settings.backgroundColor = savedBackgroundColor;
     if (savedSidebarColor) settings.sidebarColor = savedSidebarColor;
     if (savedThemeColor) settings.themeColor = savedThemeColor;
+
     loadSidebarImage();
+    loadTeamsFromStorage();
     applyTheme();
     updateResetImageButton();
 }
@@ -161,14 +521,30 @@ function adjustBrightness(hex, percent) {
 
 // Modal functions
 function openSettings() {
-    document.getElementById('settingsModal').style.display = 'block';
-    populateShipSettings();
+    loadSettings();
     populateColorSettings();
     updateResetImageButton();
+    document.getElementById('settingsModal').style.display = 'block';
 }
 
 function closeSettings() {
     document.getElementById('settingsModal').style.display = 'none';
+}
+
+function openNewGameModal() {
+    populateShipSettings();
+    document.getElementById('newGameModal').style.display = 'block';
+}
+
+function closeNewGameModal() {
+    document.getElementById('newGameModal').style.display = 'none';
+}
+
+function startNewGame() {
+    // Sla de huidige ship settings op
+    saveSettingsToCookies();
+    closeNewGameModal();
+    resetGame();
 }
 
 function populateShipSettings() {
@@ -178,7 +554,6 @@ function populateShipSettings() {
     settings.ships.forEach((ship, index) => {
         const shipControl = document.createElement('div');
         shipControl.className = 'ship-control';
-
         shipControl.innerHTML = `
             <div class="ship-info">
                 <div class="ship-name">${ship.name}</div>
@@ -241,6 +616,9 @@ function updateResetImageButton() {
 }
 
 function saveSettings() {
+    // Bewaar de huidige team selectie
+    const currentTeamId = gameState.currentTeam ? gameState.currentTeam.id : null;
+
     settings.backgroundColor = document.getElementById('backgroundColor').value;
     settings.sidebarColor = document.getElementById('sidebarColor').value;
     settings.themeColor = document.getElementById('themeColor').value;
@@ -248,15 +626,66 @@ function saveSettings() {
     console.log('Saving settings:', settings);
     saveSettingsToCookies();
     applyTheme();
+
+    // Herstel de team selectie
+    if (currentTeamId) {
+        selectTeam(currentTeamId);
+    }
+
     closeSettings();
-    resetGame();
+    // GEEN resetGame() hier - alleen instellingen opslaan
 }
 
-// Close modal when clicking outside
-window.onclick = function (event) {
-    const modal = document.getElementById('settingsModal');
-    if (event.target === modal) {
+function fullReset() {
+    if (confirm('Weet je zeker dat je een volledige reset wilt uitvoeren?\n\nDit zal:\n• Alle teams verwijderen\n• Alle kleuren resetten naar standaard\n• Het logo resetten naar standaard\n• Alle instellingen resetten\n\nDeze actie kan niet ongedaan worden gemaakt!')) {
+        // Reset teams
+        teams = [];
+        gameState.currentTeam = null;
+        saveTeamsToStorage();
+
+        // Reset settings naar standaard
+        settings = {
+            ships: [...DEFAULT_SHIPS],
+            backgroundColor: '#0c1a3d',
+            sidebarColor: '#ffffff',
+            themeColor: '#0f3460'
+        };
+
+        // Reset logo
+        deleteImageFromStorage();
+
+        // Reset cookies
+        deleteCookie('battleships_ships');
+        deleteCookie('battleships_background_color');
+        deleteCookie('battleships_sidebar_color');
+        deleteCookie('battleships_theme_color');
+
+        // Pas nieuwe instellingen toe
+        applyTheme();
+        loadSidebarImage();
+        renderTeamsList();
+        updateStatus('Selecteer een team om te beginnen!');
+
+        // Reset het spel
+        resetGame();
+
+        // Sluit modal
         closeSettings();
+
+        alert('Volledige reset voltooid! Alle instellingen en teams zijn verwijderd.');
+    }
+}
+
+// Close modals when clicking outside
+window.onclick = function (event) {
+    const settingsModal = document.getElementById('settingsModal');
+    const newGameModal = document.getElementById('newGameModal');
+
+    if (event.target === settingsModal) {
+        closeSettings();
+    }
+    if (event.target === newGameModal) {
+        closeNewGameModal();
     }
 }
 
@@ -362,11 +791,17 @@ function renderGrid() {
 
 // Handle klik op cel
 function handleClick(row, col) {
+    if (!gameState.currentTeam) {
+        alert('Selecteer eerst een team om te spelen!');
+        return;
+    }
+
     const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
     if (cell.classList.contains('hit') || cell.classList.contains('miss')) {
         return;
     }
 
+    incrementAttempts();
     const shipIndex = gameState.grid[row][col];
 
     if (shipIndex !== null) {
@@ -381,6 +816,9 @@ function handleClick(row, col) {
         position.hit = true;
         ship.hits++;
 
+        // Voeg 1 punt toe voor de hit
+        addPointsToCurrentTeam(1);
+
         // Check of schip is gezonken
         if (ship.hits === ship.size) {
             // Markeer alle posities van het gezonken schip
@@ -391,14 +829,19 @@ function handleClick(row, col) {
                 shipCell.textContent = '🔥';
             });
 
-            updateStatus(`Je hebt een ${ship.name} tot zinken gebracht!`);
+            // Voeg bonus punten toe voor gezonken schip (gelijk aan grootte van schip)
+            addPointsToCurrentTeam(ship.size);
+            updateStatus(`Team ${gameState.currentTeam.name} heeft een ${ship.name} tot zinken gebracht! +${ship.size} bonus punten!`);
 
             // Check game over
             if (gameState.ships.every(s => s.hits === s.size)) {
-                updateStatus(`Gefeliciteerd! Alle schepen zijn gezonken!`);
+                gameState.currentTeam.gamesPlayed++;
+                saveTeamsToStorage();
+                renderTeamsList();
+                showGameEndScreen();
             }
         } else {
-            updateStatus('RAAK!');
+            updateStatus('RAAK! +1 punt');
         }
     } else {
         // Mis
@@ -409,6 +852,56 @@ function handleClick(row, col) {
     }
 
     updateStats();
+
+    // Schakel active state uit na een poging
+    gameState.currentTeam = null;
+    updateTeamSelection();
+}
+
+function showGameEndScreen() {
+    const gridElement = document.getElementById('grid');
+
+    // Sorteer teams op punten voor top 3
+    const sortedTeams = [...teams].sort((a, b) => b.points - a.points);
+    const top3 = sortedTeams.slice(0, 3);
+
+    // Maak eindscherm HTML
+    let endScreenHTML = `
+        <div class="game-end-screen">
+            <div class="game-end-title">Einde! 🎉</div>
+            <div class="game-end-subtitle">Alle schepen zijn gezonken!</div>
+            <div class="top3-container">
+    `;
+
+    // Voeg top 3 teams toe
+    top3.forEach((team, index) => {
+        const rankText = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+
+        endScreenHTML += `
+            <div class="top3-team">
+                <div class="top3-rank">${rankText}</div>
+                <div class="top3-team-item" style="background-color: ${team.color};">
+                    <div class="top3-team-content">
+                        <div class="top3-team-info">
+                            <div class="top3-team-name">${team.name}</div>
+                            <div class="top3-team-attempts">Pogingen: ${team.attempts}</div>
+                        </div>
+                        <div class="top3-team-points">
+                            <span class="top3-points-value">${team.points}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    endScreenHTML += `
+            </div>
+        </div>
+    `;
+
+    // Voeg de overlay toe aan het grid in plaats van het te vervangen
+    gridElement.insertAdjacentHTML('beforeend', endScreenHTML);
 }
 
 // Update statistieken
@@ -419,23 +912,42 @@ function updateStats() {
 
 // Update status
 function updateStatus(message) {
-    document.getElementById('status').textContent = message;
+    if (message) {
+        document.getElementById('status').textContent = message;
+    } else {
+        // Update status gebaseerd op huidige team
+        if (gameState.currentTeam) {
+            const shipsLeft = gameState.ships.filter(s => s.hits < s.size).length;
+            if (shipsLeft === 0) {
+                document.getElementById('status').textContent = `Spel voltooid! Alle schepen zijn gezonken!`;
+            } else {
+                document.getElementById('status').textContent = `Team ${gameState.currentTeam.name} is aan zet`;
+            }
+        } else {
+            document.getElementById('status').textContent = 'Klik op een team in het klassement om te beginnen!';
+        }
+    }
 }
 
 // Reset game
 function resetGame() {
+    gameState.attempts = 0;
     initializeGrid();
     placeShips();
     renderGrid();
     updateStats();
-    updateStatus('Klik op een veld om aan te vallen!');
+    updateStatus();
 }
 
 // Start het spel
 loadSettings();
+renderTeamsList();
+updateTeamSelection();
 resetGame();
 
 // Bij laden van de pagina
 window.addEventListener('DOMContentLoaded', function () {
     loadSidebarImage();
+    renderTeamsList();
+    updateTeamSelection();
 });

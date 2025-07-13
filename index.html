@@ -16,18 +16,34 @@
         <div class="sidebar-image-wrapper">
           <img id="sidebar-image" src="logos/default.webp" alt="Battleship" class="sidebar-image" />
         </div>
+
+        <!-- Huidige Spel Info -->
         <div class="game-info">
-          <p id="status">Klik op een veld om aan te vallen!</p>
-          <p>Schepen over: <span id="shipsLeft">9</span></p>
+          <p id="status">Selecteer een team om te beginnen!</p>
+          <p>Schepen resterend: <span id="shipsLeft">9</span></p>
         </div>
+
+        <!-- Teams Klassement -->
+        <div class="teams-section">
+          <div class="teams-header">
+            <div class="header-rank">Rank</div>
+            <div class="header-team">Team</div>
+            <div class="header-points">Punten</div>
+          </div>
+          <div id="teamsList" class="teams-list">
+            <!-- Teams worden hier dynamisch toegevoegd -->
+          </div>
+        </div>
+
         <div class="sidebar-footer">
-          <button onclick="resetGame()">Nieuw Spel</button>
+          <button onclick="openNewGameModal()">🎮 Nieuw Spel</button>
+          <button onclick="addTeamFromPrompt()">➕ Team Toevoegen</button>
           <button onclick="openSettings()" class="settings-btn">⚙️ Instellingen</button>
         </div>
       </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Settings Modal (alleen kleuren en logo) -->
     <div id="settingsModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -36,14 +52,6 @@
         </div>
 
         <div class="modal-body">
-          <!-- Ship Settings -->
-          <div class="settings-section">
-            <h3>Schepen</h3>
-            <div id="shipSettings" class="ship-settings">
-              <!-- Ship controls will be generated here -->
-            </div>
-          </div>
-
           <!-- Kleuren -->
           <div class="settings-section">
             <h3>Kleuren</h3>
@@ -71,11 +79,45 @@
               <button onclick="resetImage()" class="reset-image-btn">Reset naar standaard</button>
             </div>
           </div>
+
+          <!-- Volledige Reset -->
+          <div class="settings-section">
+            <h3>Volledige Reset</h3>
+            <div class="reset-settings">
+              <p style="color: #ff6b6b; margin-bottom: 15px; font-size: 14px">⚠️ Let op: Dit zal alle instellingen, kleuren, logo en teams permanent verwijderen.</p>
+              <button onclick="fullReset()" class="full-reset-btn">Volledig Reset</button>
+            </div>
+          </div>
         </div>
 
         <div class="modal-footer">
-          <button onclick="saveSettings()" class="save-btn">Opslaan en spel starten</button>
+          <button onclick="saveSettings()" class="save-btn">Opslaan</button>
           <button onclick="closeSettings()" class="cancel-btn">Annuleren</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Game Modal (schepen kiezen) -->
+    <div id="newGameModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Nieuw Spel</h2>
+          <span class="close" onclick="closeNewGameModal()">&times;</span>
+        </div>
+
+        <div class="modal-body">
+          <!-- Ship Settings -->
+          <div class="settings-section">
+            <h3>Schepen</h3>
+            <div id="shipSettings" class="ship-settings">
+              <!-- Ship controls will be generated here -->
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button onclick="startNewGame()" class="save-btn">Nieuw Spel Starten</button>
+          <button onclick="closeNewGameModal()" class="cancel-btn">Annuleren</button>
         </div>
       </div>
     </div>
