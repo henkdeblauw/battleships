@@ -5,29 +5,29 @@ const TRANSLATIONS = {
     nl: {
         // Page title
         pageTitle: 'Zeeslag',
-        
+
         // Password overlay
         accessRequired: 'Toegang Vereist',
         enterPassword: 'Voer wachtwoord in...',
         access: 'Toegang',
         incorrectPassword: 'Onjuist wachtwoord',
-        
+
         // Game info
         selectTeamToStart: 'Selecteer een team om te beginnen!',
         shipsRemaining: 'Schepen resterend:',
         attempts: 'Pogingen:',
-        
+
         // Teams section
         rank: 'Rank',
         team: 'Team',
         points: 'Punten',
         noTeamsAdded: 'Nog geen teams toegevoegd',
-        
+
         // Sidebar buttons
         newGame: 'Nieuw Spel',
         addTeam: 'Team Toevoegen',
         settings: 'Instellingen',
-        
+
         // Settings modal
         language: 'Taal',
         fullScreen: 'Volledig Scherm',
@@ -44,32 +44,32 @@ const TRANSLATIONS = {
         fullResetBtn: 'Volledig Reset',
         save: 'Opslaan',
         cancel: 'Annuleren',
-        
+
         // New game modal
         ships: 'Schepen',
         startNewGame: 'Nieuw Spel Starten',
         size: 'Grootte:',
-        
+
         // Ship names
         aircraftCarrier: 'Vliegdekschip',
         battleship: 'Slagschip',
         submarine: 'Onderzeeër',
         cruiser: 'Kruiser',
         destroyer: 'Torpedobootjager',
-        
+
         // Alert messages
         enterValidTeamName: 'Voer een geldige teamnaam in!',
         maxTeamsReached: 'Maximum aantal teams (20) bereikt!',
         teamNameExists: 'Er bestaat al een team met deze naam!',
         confirmRemoveTeam: 'Weet je zeker dat je dit team wilt verwijderen?',
         selectTeamFirst: 'Selecteer eerst een team om te spelen!',
-        
+
         // Context menu
         changeTeamName: 'Teamnaam wijzigen',
         removeTeam: 'Team verwijderen',
         enterNewTeamName: 'Voer een nieuwe teamnaam in:',
         enterTeamName: 'Voer een teamnaam in:',
-        
+
         // Game status
         teamSankShip: 'Team {0} heeft een {1} tot zinken gebracht! +{2} bonus punten!',
         hit: 'RAAK! +1 punt',
@@ -77,11 +77,11 @@ const TRANSLATIONS = {
         gameCompleted: 'Spel voltooid! Alle schepen zijn gezonken!',
         teamsTurn: 'Team {0} is aan zet',
         clickTeamToStart: 'Klik op een team in het klassement om te beginnen!',
-        
+
         // Game end screen
         gameOver: 'Einde! 🎉',
         allShipsSunk: 'Alle schepen zijn gezonken!',
-        
+
         // Full reset confirmation
         confirmFullReset: 'Weet je zeker dat je een volledige reset wilt uitvoeren?\n\nDit zal:\n• Alle teams verwijderen\n• Alle kleuren resetten naar standaard\n• Het logo resetten naar standaard\n• Alle instellingen resetten\n\nDeze actie kan niet ongedaan worden gemaakt!',
         fullResetCompleted: 'Volledige reset voltooid! Alle instellingen en teams zijn verwijderd.'
@@ -89,29 +89,29 @@ const TRANSLATIONS = {
     en: {
         // Page title
         pageTitle: 'Battleships',
-        
+
         // Password overlay
         accessRequired: 'Access Required',
         enterPassword: 'Enter password...',
         access: 'Access',
         incorrectPassword: 'Incorrect password',
-        
+
         // Game info
         selectTeamToStart: 'Select a team to start!',
         shipsRemaining: 'Ships remaining:',
         attempts: 'Attempts:',
-        
+
         // Teams section
         rank: 'Rank',
         team: 'Team',
         points: 'Points',
         noTeamsAdded: 'No teams added yet',
-        
+
         // Sidebar buttons
         newGame: 'New Game',
         addTeam: 'Add Team',
         settings: 'Settings',
-        
+
         // Settings modal
         language: 'Language',
         fullScreen: 'Full Screen',
@@ -128,32 +128,32 @@ const TRANSLATIONS = {
         fullResetBtn: 'Full Reset',
         save: 'Save',
         cancel: 'Cancel',
-        
+
         // New game modal
         ships: 'Ships',
         startNewGame: 'Start New Game',
         size: 'Size:',
-        
+
         // Ship names
         aircraftCarrier: 'Aircraft Carrier',
         battleship: 'Battleship',
         submarine: 'Submarine',
         cruiser: 'Cruiser',
         destroyer: 'Destroyer',
-        
+
         // Alert messages
         enterValidTeamName: 'Enter a valid team name!',
         maxTeamsReached: 'Maximum number of teams (20) reached!',
         teamNameExists: 'A team with this name already exists!',
         confirmRemoveTeam: 'Are you sure you want to remove this team?',
         selectTeamFirst: 'Select a team first to play!',
-        
+
         // Context menu
         changeTeamName: 'Change team name',
         removeTeam: 'Remove team',
         enterNewTeamName: 'Enter a new team name:',
         enterTeamName: 'Enter a team name:',
-        
+
         // Game status
         teamSankShip: 'Team {0} sank a {1}! +{2} bonus points!',
         hit: 'HIT! +1 point',
@@ -161,11 +161,11 @@ const TRANSLATIONS = {
         gameCompleted: 'Game completed! All ships have been sunk!',
         teamsTurn: 'Team {0}\'s turn',
         clickTeamToStart: 'Click on a team in the leaderboard to start!',
-        
+
         // Game end screen
         gameOver: 'Game Over! 🎉',
         allShipsSunk: 'All ships have been sunk!',
-        
+
         // Full reset confirmation
         confirmFullReset: 'Are you sure you want to perform a full reset?\n\nThis will:\n• Remove all teams\n• Reset all colors to default\n• Reset logo to default\n• Reset all settings\n\nThis action cannot be undone!',
         fullResetCompleted: 'Full reset completed! All settings and teams have been removed.'
@@ -213,14 +213,14 @@ let settings = {
 // Translation helper functions
 function getText(key, ...args) {
     let text = TRANSLATIONS[currentLanguage][key] || TRANSLATIONS['nl'][key] || key;
-    
+
     // Replace placeholders {0}, {1}, etc. with provided arguments
     if (args.length > 0) {
         args.forEach((arg, index) => {
             text = text.replace(`{${index}}`, arg);
         });
     }
-    
+
     return text;
 }
 
@@ -228,10 +228,10 @@ function changeLanguage(lang) {
     currentLanguage = lang;
     setCookie('battleships_language', lang, 365);
     updateLanguage();
-    
+
     // Update HTML lang attribute
     document.documentElement.lang = lang;
-    
+
     // Update page title
     document.title = getText('pageTitle');
 }
@@ -242,7 +242,7 @@ function loadLanguage() {
         currentLanguage = savedLanguage;
         document.documentElement.lang = savedLanguage;
         document.title = getText('pageTitle');
-        
+
         // Update language dropdown
         const languageSelect = document.getElementById('languageSelect');
         if (languageSelect) {
@@ -257,19 +257,19 @@ function updateLanguage() {
         const key = element.getAttribute('data-translate');
         element.textContent = getText(key);
     });
-    
+
     // Update placeholder texts
     const passwordField = document.getElementById('passwordField');
     if (passwordField) {
         passwordField.placeholder = getText('enterPassword');
     }
-    
+
     // Update language dropdown selection
     const languageSelect = document.getElementById('languageSelect');
     if (languageSelect) {
         languageSelect.value = currentLanguage;
     }
-    
+
     // Update teams list and other dynamic content
     renderTeamsList();
     updateStatus();
@@ -311,17 +311,17 @@ function deleteImageFromStorage() {
 // TEAM MANAGEMENT FUNCTIES
 function addTeam(teamName) {
     if (!teamName || teamName.trim() === '') {
-        alert(getText('enterValidTeamName'));
+        showAlert(getText('enterValidTeamName'));
         return;
     }
 
     if (teams.length >= 20) {
-        alert(getText('maxTeamsReached'));
+        showAlert(getText('maxTeamsReached'));
         return;
     }
 
     if (teams.some(team => team.name.toLowerCase() === teamName.toLowerCase())) {
-        alert(getText('teamNameExists'));
+        showAlert(getText('teamNameExists'));
         return;
     }
 
@@ -352,8 +352,9 @@ function addTeam(teamName) {
     selectTeam(newTeam.id);
 }
 
-function removeTeam(teamId) {
-    if (confirm(getText('confirmRemoveTeam'))) {
+async function removeTeam(teamId) {
+    const confirmed = await showConfirm(getText('confirmRemoveTeam'));
+    if (confirmed) {
         teams = teams.filter(team => team.id !== teamId);
         saveTeamsToStorage();
         renderTeamsList();
@@ -619,11 +620,11 @@ function hideContextMenu() {
     }
 }
 
-function editTeamName(teamId) {
+async function editTeamName(teamId) {
     const team = teams.find(t => t.id === teamId);
     if (!team) return;
 
-    const newName = prompt(getText('enterNewTeamName'), team.name);
+    const newName = await showPrompt(getText('enterNewTeamName'), team.name);
 
     if (newName && newName.trim() !== '') {
         const trimmedName = newName.trim();
@@ -631,7 +632,7 @@ function editTeamName(teamId) {
         // Check of de naam al bestaat bij een ander team
         const existingTeam = teams.find(t => t.id !== teamId && t.name.toLowerCase() === trimmedName.toLowerCase());
         if (existingTeam) {
-            alert(getText('teamNameExists'));
+            showAlert(getText('teamNameExists'));
             return;
         }
 
@@ -645,8 +646,8 @@ function editTeamName(teamId) {
 
 
 // TEAM TOEVOEGING VIA PROMPT
-function addTeamFromPrompt() {
-    const teamName = prompt(getText('enterTeamName'));
+async function addTeamFromPrompt() {
+    const teamName = await showPrompt(getText('enterTeamName'));
 
     if (teamName && teamName.trim() !== '') {
         addTeam(teamName.trim());
@@ -880,8 +881,9 @@ function saveSettings() {
     // GEEN resetGame() hier - alleen instellingen opslaan
 }
 
-function fullReset() {
-    if (confirm(getText('confirmFullReset'))) {
+async function fullReset() {
+    const confirmed = await showConfirm(getText('confirmFullReset'));
+    if (confirmed) {
         // Reset teams
         teams = [];
         gameState.currentTeam = null;
@@ -916,7 +918,7 @@ function fullReset() {
         // Sluit modal
         closeSettings();
 
-        alert(getText('fullResetCompleted'));
+        showAlert(getText('fullResetCompleted'));
     }
 }
 
@@ -1036,7 +1038,7 @@ function renderGrid() {
 // Handle klik op cel
 function handleClick(row, col) {
     if (!gameState.currentTeam) {
-        alert(getText('selectTeamFirst'));
+        showAlert(getText('selectTeamFirst'));
         return;
     }
 
@@ -1195,7 +1197,7 @@ resetGame();
 function checkAccess() {
     const password = document.getElementById('passwordField').value;
     const errorMsg = document.getElementById('errorMsg');
-    
+
     if (password === 'Kleimoer9030') {
         setCookie('game_access', 'granted', 1); // 1 day
         document.getElementById('passwordOverlay').style.display = 'none';
@@ -1217,7 +1219,7 @@ function checkAuthentication() {
 // Fullscreen API functions
 function enterFullscreen() {
     const elem = document.documentElement;
-    
+
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) { // Safari
@@ -1241,6 +1243,122 @@ function exitFullscreen() {
     }
 }
 
+// Custom Modal System
+let currentModalResolve = null;
+
+function showCustomModal(title, message, type = 'alert', defaultValue = '') {
+    return new Promise((resolve) => {
+        currentModalResolve = resolve;
+        
+        const modal = document.getElementById('customModal');
+        const titleEl = document.getElementById('customModalTitle');
+        const messageEl = document.getElementById('customModalMessage');
+        const inputDiv = document.getElementById('customModalInput');
+        const inputField = document.getElementById('customModalInputField');
+        const okBtn = document.getElementById('customModalOk');
+        const cancelBtn = document.getElementById('customModalCancel');
+        
+        // Set content
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        
+        // Configure based on type
+        if (type === 'prompt') {
+            inputDiv.style.display = 'block';
+            inputField.value = defaultValue;
+            cancelBtn.style.display = 'inline-block';
+            okBtn.textContent = getText('save');
+            cancelBtn.textContent = getText('cancel');
+        } else if (type === 'confirm') {
+            inputDiv.style.display = 'none';
+            cancelBtn.style.display = 'inline-block';
+            okBtn.textContent = getText('save');
+            cancelBtn.textContent = getText('cancel');
+        } else { // alert
+            inputDiv.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            okBtn.textContent = 'OK';
+        }
+        
+        // Show modal
+        modal.style.display = 'block';
+        
+        // Focus management
+        if (type === 'prompt') {
+            setTimeout(() => inputField.focus(), 100);
+        } else {
+            setTimeout(() => okBtn.focus(), 100);
+        }
+        
+        // Remove existing event listeners
+        const newOkBtn = okBtn.cloneNode(true);
+        const newCancelBtn = cancelBtn.cloneNode(true);
+        okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+        
+        // Add event listeners
+        newOkBtn.addEventListener('click', () => {
+            const result = type === 'prompt' ? inputField.value : true;
+            hideCustomModal();
+            if (currentModalResolve) {
+                currentModalResolve(result);
+                currentModalResolve = null;
+            }
+        });
+        
+        newCancelBtn.addEventListener('click', () => {
+            hideCustomModal();
+            if (currentModalResolve) {
+                currentModalResolve(type === 'prompt' ? null : false);
+                currentModalResolve = null;
+            }
+        });
+        
+        // Keyboard support
+        const handleKeyDown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                newOkBtn.click();
+            } else if (e.key === 'Escape' && (type === 'prompt' || type === 'confirm')) {
+                e.preventDefault();
+                newCancelBtn.click();
+            }
+        };
+        
+        document.addEventListener('keydown', handleKeyDown);
+        
+        // Store cleanup function
+        modal.dataset.cleanup = 'true';
+        modal.addEventListener('hidden', () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        }, { once: true });
+    });
+}
+
+function hideCustomModal() {
+    const modal = document.getElementById('customModal');
+    modal.style.display = 'none';
+    
+    // Trigger cleanup
+    if (modal.dataset.cleanup) {
+        modal.dispatchEvent(new Event('hidden'));
+        delete modal.dataset.cleanup;
+    }
+}
+
+// Replacement functions for browser dialogs
+function showAlert(message, title = 'Melding') {
+    return showCustomModal(title, message, 'alert');
+}
+
+function showPrompt(message, defaultValue = '', title = 'Invoer') {
+    return showCustomModal(title, message, 'prompt', defaultValue);
+}
+
+function showConfirm(message, title = 'Bevestiging') {
+    return showCustomModal(title, message, 'confirm');
+}
+
 // Bij laden van de pagina
 window.addEventListener('DOMContentLoaded', function () {
     loadLanguage();
@@ -1249,11 +1367,27 @@ window.addEventListener('DOMContentLoaded', function () {
     loadSidebarImage();
     renderTeamsList();
     updateTeamSelection();
-    
+
     // Add enter key support
-    document.getElementById('passwordField').addEventListener('keypress', function(e) {
+    document.getElementById('passwordField').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             checkAccess();
+        }
+    });
+    
+    // Close custom modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('customModal');
+        if (event.target === modal) {
+            // Only close if it's not a confirm dialog (to prevent accidental cancellation)
+            const cancelBtn = document.getElementById('customModalCancel');
+            if (cancelBtn.style.display === 'none') {
+                hideCustomModal();
+                if (currentModalResolve) {
+                    currentModalResolve(true); // For alerts
+                    currentModalResolve = null;
+                }
+            }
         }
     });
 });
