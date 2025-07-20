@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Simple Password Overlay -->
+    <div id="passwordOverlay" class="password-overlay">
+      <div class="password-box">
+        <h2>Toegang Vereist</h2>
+        <input type="password" id="passwordField" placeholder="Voer wachtwoord in..." />
+        <button onclick="checkAccess()">Toegang</button>
+        <div id="errorMsg" class="error-msg"></div>
+      </div>
+    </div>
     <div class="container">
       <div class="board">
         <div id="grid" class="grid"></div>
@@ -52,6 +61,15 @@
         </div>
 
         <div class="modal-body">
+          <!-- Fullscreen Controls -->
+          <div class="settings-section">
+            <h3>Volledig Scherm</h3>
+            <div class="fullscreen-controls">
+              <button onclick="enterFullscreen()" class="fullscreen-btn">Volledig Scherm</button>
+              <button onclick="exitFullscreen()" class="fullscreen-btn">Normaal Scherm</button>
+            </div>
+          </div>
+
           <!-- Kleuren -->
           <div class="settings-section">
             <h3>Kleuren</h3>

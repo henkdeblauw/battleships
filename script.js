@@ -947,9 +947,67 @@ renderTeamsList();
 updateTeamSelection();
 resetGame();
 
+// Simple password protection
+function checkAccess() {
+    const password = document.getElementById('passwordField').value;
+    const errorMsg = document.getElementById('errorMsg');
+    
+    if (password === 'Kleimoer9030') {
+        setCookie('game_access', 'granted', 1); // 1 day
+        document.getElementById('passwordOverlay').style.display = 'none';
+        errorMsg.textContent = '';
+    } else {
+        errorMsg.textContent = 'Onjuist wachtwoord';
+        document.getElementById('passwordField').value = '';
+    }
+}
+
+// Check if already authenticated on page load
+function checkAuthentication() {
+    const access = getCookie('game_access');
+    if (access === 'granted') {
+        document.getElementById('passwordOverlay').style.display = 'none';
+    }
+}
+
+// Fullscreen API functions
+function enterFullscreen() {
+    const elem = document.documentElement;
+    
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { // Safari
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE11
+        elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Firefox
+        elem.mozRequestFullScreen();
+    }
+}
+
+function exitFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { // Safari
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { // IE11
+        document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) { // Firefox
+        document.mozCancelFullScreen();
+    }
+}
+
 // Bij laden van de pagina
 window.addEventListener('DOMContentLoaded', function () {
+    checkAuthentication();
     loadSidebarImage();
     renderTeamsList();
     updateTeamSelection();
+    
+    // Add enter key support
+    document.getElementById('passwordField').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkAccess();
+        }
+    });
 });

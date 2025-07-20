@@ -452,6 +452,73 @@ button:hover {
   border-bottom: none;
 }
 
+/* Password Overlay */
+.password-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-box {
+  background-color: #1a1a2e;
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(191, 214, 1, 0.3);
+}
+
+.password-box h2 {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.password-box input {
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1.1rem;
+  width: 200px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.password-box input:focus {
+  outline: none;
+  border-color: #bfd601;
+  box-shadow: 0 0 10px rgba(191, 214, 1, 0.3);
+}
+
+.password-box button {
+  background-color: #bfd601;
+  color: black;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.password-box button:hover {
+  background-color: #a8c001;
+}
+
+.error-msg {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
 /* Modal Styles */
 .modal {
   display: none;
@@ -618,6 +685,31 @@ button:hover {
   font-weight: bold;
   color: white;
   font-size: 1.1rem;
+}
+
+.fullscreen-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.fullscreen-btn {
+  background-color: #bfd601;
+  color: #000000;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  flex-grow: 1;
+}
+
+.fullscreen-btn:hover {
+  background-color: #a8c001;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .color-settings {
