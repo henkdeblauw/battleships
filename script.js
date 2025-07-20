@@ -1,10 +1,186 @@
 const GRID_SIZE = 14;
+
+// Translation system
+const TRANSLATIONS = {
+    nl: {
+        // Page title
+        pageTitle: 'Zeeslag',
+        
+        // Password overlay
+        accessRequired: 'Toegang Vereist',
+        enterPassword: 'Voer wachtwoord in...',
+        access: 'Toegang',
+        incorrectPassword: 'Onjuist wachtwoord',
+        
+        // Game info
+        selectTeamToStart: 'Selecteer een team om te beginnen!',
+        shipsRemaining: 'Schepen resterend:',
+        attempts: 'Pogingen:',
+        
+        // Teams section
+        rank: 'Rank',
+        team: 'Team',
+        points: 'Punten',
+        noTeamsAdded: 'Nog geen teams toegevoegd',
+        
+        // Sidebar buttons
+        newGame: 'Nieuw Spel',
+        addTeam: 'Team Toevoegen',
+        settings: 'Instellingen',
+        
+        // Settings modal
+        language: 'Taal',
+        fullScreen: 'Volledig Scherm',
+        fullScreenBtn: 'Volledig Scherm',
+        normalScreen: 'Normaal Scherm',
+        colors: 'Kleuren',
+        backgroundColor: 'Achtergrondkleur:',
+        sidebarColor: 'Zijpaneel kleur:',
+        themeColor: 'Thema kleur:',
+        logo: 'Logo',
+        resetToDefault: 'Reset naar standaard',
+        fullReset: 'Volledige Reset',
+        fullResetWarning: '⚠️ Let op: Dit zal alle instellingen, kleuren, logo en teams permanent verwijderen.',
+        fullResetBtn: 'Volledig Reset',
+        save: 'Opslaan',
+        cancel: 'Annuleren',
+        
+        // New game modal
+        ships: 'Schepen',
+        startNewGame: 'Nieuw Spel Starten',
+        size: 'Grootte:',
+        
+        // Ship names
+        aircraftCarrier: 'Vliegdekschip',
+        battleship: 'Slagschip',
+        submarine: 'Onderzeeër',
+        cruiser: 'Kruiser',
+        destroyer: 'Torpedobootjager',
+        
+        // Alert messages
+        enterValidTeamName: 'Voer een geldige teamnaam in!',
+        maxTeamsReached: 'Maximum aantal teams (20) bereikt!',
+        teamNameExists: 'Er bestaat al een team met deze naam!',
+        confirmRemoveTeam: 'Weet je zeker dat je dit team wilt verwijderen?',
+        selectTeamFirst: 'Selecteer eerst een team om te spelen!',
+        
+        // Context menu
+        changeTeamName: 'Teamnaam wijzigen',
+        removeTeam: 'Team verwijderen',
+        enterNewTeamName: 'Voer een nieuwe teamnaam in:',
+        enterTeamName: 'Voer een teamnaam in:',
+        
+        // Game status
+        teamSankShip: 'Team {0} heeft een {1} tot zinken gebracht! +{2} bonus punten!',
+        hit: 'RAAK! +1 punt',
+        miss: 'MIS!',
+        gameCompleted: 'Spel voltooid! Alle schepen zijn gezonken!',
+        teamsTurn: 'Team {0} is aan zet',
+        clickTeamToStart: 'Klik op een team in het klassement om te beginnen!',
+        
+        // Game end screen
+        gameOver: 'Einde! 🎉',
+        allShipsSunk: 'Alle schepen zijn gezonken!',
+        
+        // Full reset confirmation
+        confirmFullReset: 'Weet je zeker dat je een volledige reset wilt uitvoeren?\n\nDit zal:\n• Alle teams verwijderen\n• Alle kleuren resetten naar standaard\n• Het logo resetten naar standaard\n• Alle instellingen resetten\n\nDeze actie kan niet ongedaan worden gemaakt!',
+        fullResetCompleted: 'Volledige reset voltooid! Alle instellingen en teams zijn verwijderd.'
+    },
+    en: {
+        // Page title
+        pageTitle: 'Battleships',
+        
+        // Password overlay
+        accessRequired: 'Access Required',
+        enterPassword: 'Enter password...',
+        access: 'Access',
+        incorrectPassword: 'Incorrect password',
+        
+        // Game info
+        selectTeamToStart: 'Select a team to start!',
+        shipsRemaining: 'Ships remaining:',
+        attempts: 'Attempts:',
+        
+        // Teams section
+        rank: 'Rank',
+        team: 'Team',
+        points: 'Points',
+        noTeamsAdded: 'No teams added yet',
+        
+        // Sidebar buttons
+        newGame: 'New Game',
+        addTeam: 'Add Team',
+        settings: 'Settings',
+        
+        // Settings modal
+        language: 'Language',
+        fullScreen: 'Full Screen',
+        fullScreenBtn: 'Full Screen',
+        normalScreen: 'Normal Screen',
+        colors: 'Colors',
+        backgroundColor: 'Background color:',
+        sidebarColor: 'Sidebar color:',
+        themeColor: 'Theme color:',
+        logo: 'Logo',
+        resetToDefault: 'Reset to default',
+        fullReset: 'Full Reset',
+        fullResetWarning: '⚠️ Warning: This will permanently delete all settings, colors, logo and teams.',
+        fullResetBtn: 'Full Reset',
+        save: 'Save',
+        cancel: 'Cancel',
+        
+        // New game modal
+        ships: 'Ships',
+        startNewGame: 'Start New Game',
+        size: 'Size:',
+        
+        // Ship names
+        aircraftCarrier: 'Aircraft Carrier',
+        battleship: 'Battleship',
+        submarine: 'Submarine',
+        cruiser: 'Cruiser',
+        destroyer: 'Destroyer',
+        
+        // Alert messages
+        enterValidTeamName: 'Enter a valid team name!',
+        maxTeamsReached: 'Maximum number of teams (20) reached!',
+        teamNameExists: 'A team with this name already exists!',
+        confirmRemoveTeam: 'Are you sure you want to remove this team?',
+        selectTeamFirst: 'Select a team first to play!',
+        
+        // Context menu
+        changeTeamName: 'Change team name',
+        removeTeam: 'Remove team',
+        enterNewTeamName: 'Enter a new team name:',
+        enterTeamName: 'Enter a team name:',
+        
+        // Game status
+        teamSankShip: 'Team {0} sank a {1}! +{2} bonus points!',
+        hit: 'HIT! +1 point',
+        miss: 'MISS!',
+        gameCompleted: 'Game completed! All ships have been sunk!',
+        teamsTurn: 'Team {0}\'s turn',
+        clickTeamToStart: 'Click on a team in the leaderboard to start!',
+        
+        // Game end screen
+        gameOver: 'Game Over! 🎉',
+        allShipsSunk: 'All ships have been sunk!',
+        
+        // Full reset confirmation
+        confirmFullReset: 'Are you sure you want to perform a full reset?\n\nThis will:\n• Remove all teams\n• Reset all colors to default\n• Reset logo to default\n• Reset all settings\n\nThis action cannot be undone!',
+        fullResetCompleted: 'Full reset completed! All settings and teams have been removed.'
+    }
+};
+
+// Current language (default Dutch)
+let currentLanguage = 'nl';
+
 const DEFAULT_SHIPS = [
-    { name: 'Vliegdekschip', size: 6, count: 2 },
-    { name: 'Slagschip', size: 5, count: 3 },
-    { name: 'Onderzeeër', size: 4, count: 3 },
-    { name: 'Kruiser', size: 3, count: 1 },
-    { name: 'Torpedobootjager', size: 2, count: 3 }
+    { name: 'aircraftCarrier', size: 6, count: 2 },
+    { name: 'battleship', size: 5, count: 3 },
+    { name: 'submarine', size: 4, count: 3 },
+    { name: 'cruiser', size: 3, count: 1 },
+    { name: 'destroyer', size: 2, count: 3 }
 ];
 
 // 20 unieke kleuren voor teams (zeer diverse kleuren met uitstekend contrast voor zwarte tekst)
@@ -33,6 +209,71 @@ let settings = {
     sidebarColor: '#ffffff',
     themeColor: '#0f3460'
 };
+
+// Translation helper functions
+function getText(key, ...args) {
+    let text = TRANSLATIONS[currentLanguage][key] || TRANSLATIONS['nl'][key] || key;
+    
+    // Replace placeholders {0}, {1}, etc. with provided arguments
+    if (args.length > 0) {
+        args.forEach((arg, index) => {
+            text = text.replace(`{${index}}`, arg);
+        });
+    }
+    
+    return text;
+}
+
+function changeLanguage(lang) {
+    currentLanguage = lang;
+    setCookie('battleships_language', lang, 365);
+    updateLanguage();
+    
+    // Update HTML lang attribute
+    document.documentElement.lang = lang;
+    
+    // Update page title
+    document.title = getText('pageTitle');
+}
+
+function loadLanguage() {
+    const savedLanguage = getCookie('battleships_language');
+    if (savedLanguage && TRANSLATIONS[savedLanguage]) {
+        currentLanguage = savedLanguage;
+        document.documentElement.lang = savedLanguage;
+        document.title = getText('pageTitle');
+        
+        // Update language dropdown
+        const languageSelect = document.getElementById('languageSelect');
+        if (languageSelect) {
+            languageSelect.value = savedLanguage;
+        }
+    }
+}
+
+function updateLanguage() {
+    // Update all elements with data-translate attribute
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        element.textContent = getText(key);
+    });
+    
+    // Update placeholder texts
+    const passwordField = document.getElementById('passwordField');
+    if (passwordField) {
+        passwordField.placeholder = getText('enterPassword');
+    }
+    
+    // Update language dropdown selection
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = currentLanguage;
+    }
+    
+    // Update teams list and other dynamic content
+    renderTeamsList();
+    updateStatus();
+}
 
 // Cookie management functions
 function setCookie(name, value, days = 365) {
@@ -70,17 +311,17 @@ function deleteImageFromStorage() {
 // TEAM MANAGEMENT FUNCTIES
 function addTeam(teamName) {
     if (!teamName || teamName.trim() === '') {
-        alert('Voer een geldige teamnaam in!');
+        alert(getText('enterValidTeamName'));
         return;
     }
 
     if (teams.length >= 20) {
-        alert('Maximum aantal teams (20) bereikt!');
+        alert(getText('maxTeamsReached'));
         return;
     }
 
     if (teams.some(team => team.name.toLowerCase() === teamName.toLowerCase())) {
-        alert('Er bestaat al een team met deze naam!');
+        alert(getText('teamNameExists'));
         return;
     }
 
@@ -112,7 +353,7 @@ function addTeam(teamName) {
 }
 
 function removeTeam(teamId) {
-    if (confirm('Weet je zeker dat je dit team wilt verwijderen?')) {
+    if (confirm(getText('confirmRemoveTeam'))) {
         teams = teams.filter(team => team.id !== teamId);
         saveTeamsToStorage();
         renderTeamsList();
@@ -162,7 +403,7 @@ function renderTeamsList() {
 
     // Toon "geen teams" bericht als er geen teams zijn
     if (teams.length === 0) {
-        teamsList.innerHTML = '<div class="no-teams">Nog geen teams toegevoegd</div>';
+        teamsList.innerHTML = `<div class="no-teams">${getText('noTeamsAdded')}</div>`;
         return;
     }
 
@@ -198,7 +439,7 @@ function renderTeamsList() {
         const pointsElement = el.querySelector('.points-value');
         if (pointsElement) pointsElement.textContent = team.points;
         const attemptsElement = el.querySelector('.team-attempts');
-        if (attemptsElement) attemptsElement.textContent = `Pogingen: ${team.attempts}`;
+        if (attemptsElement) attemptsElement.textContent = `${getText('attempts')} ${team.attempts}`;
         const teamElement = el.querySelector('.team-item');
         if (teamElement) {
             if (gameState.currentTeam && gameState.currentTeam.id === team.id) {
@@ -279,7 +520,7 @@ function createTeamElement(team, index) {
         <div class="team-content">
             <div class="team-info">
                 <div class="team-name">${team.name}</div>
-                <div class="team-attempts">Pogingen: ${team.attempts}</div>
+                <div class="team-attempts">${getText('attempts')} ${team.attempts}</div>
             </div>
             <div class="team-points">
                 <span class="points-value">${team.points}</span>
@@ -352,10 +593,10 @@ function showContextMenu(event, teamId) {
     contextMenu.className = 'context-menu';
     contextMenu.innerHTML = `
         <div class="context-menu-item" onclick="editTeamName(${teamId}); hideContextMenu();">
-            <span>Teamnaam wijzigen</span>
+            <span>${getText('changeTeamName')}</span>
         </div>
         <div class="context-menu-item" onclick="removeTeam(${teamId}); hideContextMenu();">
-            <span>Team verwijderen</span>
+            <span>${getText('removeTeam')}</span>
         </div>
     `;
 
@@ -382,7 +623,7 @@ function editTeamName(teamId) {
     const team = teams.find(t => t.id === teamId);
     if (!team) return;
 
-    const newName = prompt('Voer een nieuwe teamnaam in:', team.name);
+    const newName = prompt(getText('enterNewTeamName'), team.name);
 
     if (newName && newName.trim() !== '') {
         const trimmedName = newName.trim();
@@ -390,7 +631,7 @@ function editTeamName(teamId) {
         // Check of de naam al bestaat bij een ander team
         const existingTeam = teams.find(t => t.id !== teamId && t.name.toLowerCase() === trimmedName.toLowerCase());
         if (existingTeam) {
-            alert('Er bestaat al een team met deze naam!');
+            alert(getText('teamNameExists'));
             return;
         }
 
@@ -405,7 +646,7 @@ function editTeamName(teamId) {
 
 // TEAM TOEVOEGING VIA PROMPT
 function addTeamFromPrompt() {
-    const teamName = prompt('Voer een teamnaam in:');
+    const teamName = prompt(getText('enterTeamName'));
 
     if (teamName && teamName.trim() !== '') {
         addTeam(teamName.trim());
@@ -441,6 +682,7 @@ function loadSettings() {
     if (savedSidebarColor) settings.sidebarColor = savedSidebarColor;
     if (savedThemeColor) settings.themeColor = savedThemeColor;
 
+    loadLanguage();
     loadSidebarImage();
     loadTeamsFromStorage();
     applyTheme();
@@ -558,8 +800,8 @@ function populateShipSettings() {
         shipControl.className = 'ship-control';
         shipControl.innerHTML = `
             <div class="ship-info">
-                <div class="ship-name">${ship.name}</div>
-                <div class="ship-size">Grootte: ${ship.size}</div>
+                <div class="ship-name">${getText(ship.name)}</div>
+                <div class="ship-size">${getText('size')} ${ship.size}</div>
             </div>
             <div class="ship-count-controls">
                 <button class="count-btn" onclick="changeShipCount(${index}, -1)">-</button>
@@ -639,7 +881,7 @@ function saveSettings() {
 }
 
 function fullReset() {
-    if (confirm('Weet je zeker dat je een volledige reset wilt uitvoeren?\n\nDit zal:\n• Alle teams verwijderen\n• Alle kleuren resetten naar standaard\n• Het logo resetten naar standaard\n• Alle instellingen resetten\n\nDeze actie kan niet ongedaan worden gemaakt!')) {
+    if (confirm(getText('confirmFullReset'))) {
         // Reset teams
         teams = [];
         gameState.currentTeam = null;
@@ -666,7 +908,7 @@ function fullReset() {
         applyTheme();
         loadSidebarImage();
         renderTeamsList();
-        updateStatus('Selecteer een team om te beginnen!');
+        updateStatus(getText('selectTeamToStart'));
 
         // Reset het spel
         resetGame();
@@ -674,7 +916,7 @@ function fullReset() {
         // Sluit modal
         closeSettings();
 
-        alert('Volledige reset voltooid! Alle instellingen en teams zijn verwijderd.');
+        alert(getText('fullResetCompleted'));
     }
 }
 
@@ -794,7 +1036,7 @@ function renderGrid() {
 // Handle klik op cel
 function handleClick(row, col) {
     if (!gameState.currentTeam) {
-        alert('Selecteer eerst een team om te spelen!');
+        alert(getText('selectTeamFirst'));
         return;
     }
 
@@ -823,17 +1065,19 @@ function handleClick(row, col) {
 
         // Check of schip is gezonken
         if (ship.hits === ship.size) {
-            // Markeer alle posities van het gezonken schip
+            // Markeer alle posities van het gezonken schip met teamkleur
             ship.positions.forEach(pos => {
                 const shipCell = document.querySelector(`[data-row="${pos.row}"][data-col="${pos.col}"]`);
                 shipCell.classList.remove('hit');
                 shipCell.classList.add('sunk');
+                shipCell.style.backgroundColor = gameState.currentTeam.color;
                 shipCell.textContent = '🔥';
             });
 
             // Voeg bonus punten toe voor gezonken schip (gelijk aan grootte van schip)
             addPointsToCurrentTeam(ship.size);
-            updateStatus(`Team ${gameState.currentTeam.name} heeft een ${ship.name} tot zinken gebracht! +${ship.size} bonus punten!`);
+            const shipName = getText(ship.name);
+            updateStatus(getText('teamSankShip', gameState.currentTeam.name, shipName, ship.size));
 
             // Check game over
             if (gameState.ships.every(s => s.hits === s.size)) {
@@ -843,14 +1087,14 @@ function handleClick(row, col) {
                 showGameEndScreen();
             }
         } else {
-            updateStatus('RAAK! +1 punt');
+            updateStatus(getText('hit'));
         }
     } else {
         // Mis
         cell.classList.add('miss');
         cell.classList.remove('water');
         cell.textContent = '🌊';
-        updateStatus('MIS!');
+        updateStatus(getText('miss'));
     }
 
     updateStats();
@@ -870,8 +1114,8 @@ function showGameEndScreen() {
     // Maak eindscherm HTML
     let endScreenHTML = `
         <div class="game-end-screen">
-            <div class="game-end-title">Einde! 🎉</div>
-            <div class="game-end-subtitle">Alle schepen zijn gezonken!</div>
+            <div class="game-end-title">${getText('gameOver')}</div>
+            <div class="game-end-subtitle">${getText('allShipsSunk')}</div>
             <div class="top3-container">
     `;
 
@@ -921,12 +1165,12 @@ function updateStatus(message) {
         if (gameState.currentTeam) {
             const shipsLeft = gameState.ships.filter(s => s.hits < s.size).length;
             if (shipsLeft === 0) {
-                document.getElementById('status').textContent = `Spel voltooid! Alle schepen zijn gezonken!`;
+                document.getElementById('status').textContent = getText('gameCompleted');
             } else {
-                document.getElementById('status').textContent = `Team ${gameState.currentTeam.name} is aan zet`;
+                document.getElementById('status').textContent = getText('teamsTurn', gameState.currentTeam.name);
             }
         } else {
-            document.getElementById('status').textContent = 'Klik op een team in het klassement om te beginnen!';
+            document.getElementById('status').textContent = getText('clickTeamToStart');
         }
     }
 }
@@ -957,7 +1201,7 @@ function checkAccess() {
         document.getElementById('passwordOverlay').style.display = 'none';
         errorMsg.textContent = '';
     } else {
-        errorMsg.textContent = 'Onjuist wachtwoord';
+        errorMsg.textContent = getText('incorrectPassword');
         document.getElementById('passwordField').value = '';
     }
 }
@@ -999,6 +1243,8 @@ function exitFullscreen() {
 
 // Bij laden van de pagina
 window.addEventListener('DOMContentLoaded', function () {
+    loadLanguage();
+    updateLanguage();
     checkAuthentication();
     loadSidebarImage();
     renderTeamsList();

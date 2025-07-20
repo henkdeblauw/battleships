@@ -126,7 +126,7 @@ h1 {
 }
 
 .sunk {
-  background-color: #dc354698;
+  /* Background color wordt dynamisch ingesteld via JavaScript met teamkleur */
   border: 1px solid var(--border-color);
   font-size: 1.5vw;
   cursor: default;
@@ -685,6 +685,34 @@ button:hover {
   font-weight: bold;
   color: white;
   font-size: 1.1rem;
+}
+
+.language-settings {
+  display: flex;
+  justify-content: center;
+}
+
+.language-dropdown {
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.language-dropdown:focus {
+  outline: none;
+  border-color: #bfd601;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.language-dropdown option {
+  background-color: #1a1a2e;
+  color: white;
 }
 
 .fullscreen-controls {

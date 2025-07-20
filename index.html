@@ -11,9 +11,9 @@
     <!-- Simple Password Overlay -->
     <div id="passwordOverlay" class="password-overlay">
       <div class="password-box">
-        <h2>Toegang Vereist</h2>
+        <h2 data-translate="accessRequired">Toegang Vereist</h2>
         <input type="password" id="passwordField" placeholder="Voer wachtwoord in..." />
-        <button onclick="checkAccess()">Toegang</button>
+        <button onclick="checkAccess()" data-translate="access">Toegang</button>
         <div id="errorMsg" class="error-msg"></div>
       </div>
     </div>
@@ -29,15 +29,15 @@
         <!-- Huidige Spel Info -->
         <div class="game-info">
           <p id="status">Selecteer een team om te beginnen!</p>
-          <p>Schepen resterend: <span id="shipsLeft">9</span></p>
+          <p><span data-translate="shipsRemaining">Schepen resterend:</span> <span id="shipsLeft">9</span></p>
         </div>
 
         <!-- Teams Klassement -->
         <div class="teams-section">
           <div class="teams-header">
-            <div class="header-rank">Rank</div>
-            <div class="header-team">Team</div>
-            <div class="header-points">Punten</div>
+            <div class="header-rank" data-translate="rank">Rank</div>
+            <div class="header-team" data-translate="team">Team</div>
+            <div class="header-points" data-translate="points">Punten</div>
           </div>
           <div id="teamsList" class="teams-list">
             <!-- Teams worden hier dynamisch toegevoegd -->
@@ -45,9 +45,9 @@
         </div>
 
         <div class="sidebar-footer">
-          <button onclick="openNewGameModal()">🎮 Nieuw Spel</button>
-          <button onclick="addTeamFromPrompt()">➕ Team Toevoegen</button>
-          <button onclick="openSettings()" class="settings-btn">⚙️ Instellingen</button>
+          <button onclick="openNewGameModal()" data-translate="newGame">🎮 Nieuw Spel</button>
+          <button onclick="addTeamFromPrompt()" data-translate="addTeam">➕ Team Toevoegen</button>
+          <button onclick="openSettings()" class="settings-btn" data-translate="settings">⚙️ Instellingen</button>
         </div>
       </div>
     </div>
@@ -56,34 +56,45 @@
     <div id="settingsModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Instellingen</h2>
+          <h2 data-translate="settings">Instellingen</h2>
           <span class="close" onclick="closeSettings()">&times;</span>
         </div>
 
         <div class="modal-body">
+          <!-- Language Selection -->
+          <div class="settings-section">
+            <h3 data-translate="language">Taal</h3>
+            <div class="language-settings">
+              <select id="languageSelect" onchange="changeLanguage(this.value)" class="language-dropdown">
+                <option value="nl">Nederlands</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Fullscreen Controls -->
           <div class="settings-section">
-            <h3>Volledig Scherm</h3>
+            <h3 data-translate="fullScreen">Volledig Scherm</h3>
             <div class="fullscreen-controls">
-              <button onclick="enterFullscreen()" class="fullscreen-btn">Volledig Scherm</button>
-              <button onclick="exitFullscreen()" class="fullscreen-btn">Normaal Scherm</button>
+              <button onclick="enterFullscreen()" class="fullscreen-btn" data-translate="fullScreenBtn">Volledig Scherm</button>
+              <button onclick="exitFullscreen()" class="fullscreen-btn" data-translate="normalScreen">Normaal Scherm</button>
             </div>
           </div>
 
           <!-- Kleuren -->
           <div class="settings-section">
-            <h3>Kleuren</h3>
+            <h3 data-translate="colors">Kleuren</h3>
             <div class="color-settings">
               <div class="color-input">
-                <label for="backgroundColor">Achtergrondkleur:</label>
+                <label for="backgroundColor" data-translate="backgroundColor">Achtergrondkleur:</label>
                 <input type="color" id="backgroundColor" value="#0c1a3d" />
               </div>
               <div class="color-input">
-                <label for="sidebarColor">Zijpaneel kleur:</label>
+                <label for="sidebarColor" data-translate="sidebarColor">Zijpaneel kleur:</label>
                 <input type="color" id="sidebarColor" value="#16213e" />
               </div>
               <div class="color-input">
-                <label for="themeColor">Thema kleur:</label>
+                <label for="themeColor" data-translate="themeColor">Thema kleur:</label>
                 <input type="color" id="themeColor" value="#0f3460" />
               </div>
             </div>
@@ -91,26 +102,26 @@
 
           <!-- Image Upload -->
           <div class="settings-section">
-            <h3>Logo</h3>
+            <h3 data-translate="logo">Logo</h3>
             <div class="image-settings">
               <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)" />
-              <button onclick="resetImage()" class="reset-image-btn">Reset naar standaard</button>
+              <button onclick="resetImage()" class="reset-image-btn" data-translate="resetToDefault">Reset naar standaard</button>
             </div>
           </div>
 
           <!-- Volledige Reset -->
           <div class="settings-section">
-            <h3>Volledige Reset</h3>
+            <h3 data-translate="fullReset">Volledige Reset</h3>
             <div class="reset-settings">
-              <p style="color: #ff6b6b; margin-bottom: 15px; font-size: 14px">⚠️ Let op: Dit zal alle instellingen, kleuren, logo en teams permanent verwijderen.</p>
-              <button onclick="fullReset()" class="full-reset-btn">Volledig Reset</button>
+              <p style="color: #ff6b6b; margin-bottom: 15px; font-size: 14px" data-translate="fullResetWarning">⚠️ Let op: Dit zal alle instellingen, kleuren, logo en teams permanent verwijderen.</p>
+              <button onclick="fullReset()" class="full-reset-btn" data-translate="fullResetBtn">Volledig Reset</button>
             </div>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button onclick="saveSettings()" class="save-btn">Opslaan</button>
-          <button onclick="closeSettings()" class="cancel-btn">Annuleren</button>
+          <button onclick="saveSettings()" class="save-btn" data-translate="save">Opslaan</button>
+          <button onclick="closeSettings()" class="cancel-btn" data-translate="cancel">Annuleren</button>
         </div>
       </div>
     </div>
@@ -119,14 +130,14 @@
     <div id="newGameModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Nieuw Spel</h2>
+          <h2 data-translate="newGame">Nieuw Spel</h2>
           <span class="close" onclick="closeNewGameModal()">&times;</span>
         </div>
 
         <div class="modal-body">
           <!-- Ship Settings -->
           <div class="settings-section">
-            <h3>Schepen</h3>
+            <h3 data-translate="ships">Schepen</h3>
             <div id="shipSettings" class="ship-settings">
               <!-- Ship controls will be generated here -->
             </div>
@@ -134,8 +145,8 @@
         </div>
 
         <div class="modal-footer">
-          <button onclick="startNewGame()" class="save-btn">Nieuw Spel Starten</button>
-          <button onclick="closeNewGameModal()" class="cancel-btn">Annuleren</button>
+          <button onclick="startNewGame()" class="save-btn" data-translate="startNewGame">Nieuw Spel Starten</button>
+          <button onclick="closeNewGameModal()" class="cancel-btn" data-translate="cancel">Annuleren</button>
         </div>
       </div>
     </div>
