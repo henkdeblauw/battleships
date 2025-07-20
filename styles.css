@@ -52,10 +52,14 @@ h1 {
 }
 
 .board {
-  height: calc(100vh - 48px);
-  aspect-ratio: 1 / 1;
-  width: auto;
-  max-width: 100%;
+  /* Safari-compatible square container */
+  height: min(calc(100vh - 48px), calc(100vw - 200px));
+  height: min(calc(100dvh - 48px), calc(100vw - 200px));
+  width: min(calc(100vh - 48px), calc(100vw - 200px));
+  width: min(calc(100dvh - 48px), calc(100vw - 200px));
+  max-width: calc(100vw - 200px);
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -65,16 +69,19 @@ h1 {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
   position: relative;
+  flex-shrink: 0;
 }
 
 .grid {
   width: 100%;
   height: 100%;
-  aspect-ratio: 1 / 1;
   display: grid;
   grid-template-columns: repeat(15, 1fr);
   grid-template-rows: repeat(15, 1fr);
   gap: 2px;
+  /* Safari-specific grid container fixes */
+  position: relative;
+  overflow: hidden;
 }
 
 .cell {
@@ -91,6 +98,42 @@ h1 {
   padding: 0;
   line-height: 1;
   transition: background 0.2s, color 0.2s;
+  /* Safari fallback for aspect-ratio */
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Safari/WebKit specific fixes */
+@supports not (aspect-ratio: 1/1) {
+  .cell {
+    height: 0;
+    padding-bottom: 100%;
+    position: relative;
+  }
+  
+  .cell > * {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Safari-specific media query for better grid handling */
+@media screen and (-webkit-min-device-pixel-ratio: 1) {
+  .board {
+    /* Force hardware acceleration on Safari */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: width, height;
+  }
+  
+  .grid {
+    /* Improve Safari grid rendering */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
 }
 
 .cell .emoji {
@@ -187,8 +230,10 @@ button:hover {
   flex-direction: row;
   width: 100%;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile Safari */
   max-width: 100%;
   max-height: 100vh;
+  max-height: 100dvh;
   margin: 0;
   padding: 20px;
   align-items: stretch;
@@ -208,6 +253,7 @@ button:hover {
   color: var(--text-color);
   flex: 1 1 0;
   height: calc(100vh - 48px);
+  height: calc(100dvh - 48px);
   align-self: flex-start;
   overflow: hidden;
   box-sizing: border-box;

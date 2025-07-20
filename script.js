@@ -84,7 +84,12 @@ const TRANSLATIONS = {
 
         // Full reset confirmation
         confirmFullReset: 'Weet je zeker dat je een volledige reset wilt uitvoeren?\n\nDit zal:\n• Alle teams verwijderen\n• Alle kleuren resetten naar standaard\n• Het logo resetten naar standaard\n• Alle instellingen resetten\n\nDeze actie kan niet ongedaan worden gemaakt!',
-        fullResetCompleted: 'Volledige reset voltooid! Alle instellingen en teams zijn verwijderd.'
+        fullResetCompleted: 'Volledige reset voltooid! Alle instellingen en teams zijn verwijderd.',
+        
+        // Modal headers
+        modalAlert: 'Melding',
+        modalPrompt: 'Invoer',
+        modalConfirm: 'Bevestiging'
     },
     en: {
         // Page title
@@ -168,7 +173,12 @@ const TRANSLATIONS = {
 
         // Full reset confirmation
         confirmFullReset: 'Are you sure you want to perform a full reset?\n\nThis will:\n• Remove all teams\n• Reset all colors to default\n• Reset logo to default\n• Reset all settings\n\nThis action cannot be undone!',
-        fullResetCompleted: 'Full reset completed! All settings and teams have been removed.'
+        fullResetCompleted: 'Full reset completed! All settings and teams have been removed.',
+        
+        // Modal headers
+        modalAlert: 'Notice',
+        modalPrompt: 'Input',
+        modalConfirm: 'Confirmation'
     }
 };
 
@@ -1216,6 +1226,32 @@ function checkAuthentication() {
     }
 }
 
+// Safari grid refresh helper
+function refreshGridLayout() {
+    // Force reflow on Safari/WebKit after fullscreen changes
+    const board = document.querySelector('.board');
+    const grid = document.querySelector('.grid');
+    
+    if (board && grid) {
+        // Temporarily hide elements to force recalculation
+        const originalDisplay = board.style.display;
+        board.style.display = 'none';
+        
+        // Force reflow
+        board.offsetHeight;
+        
+        // Restore display
+        board.style.display = originalDisplay;
+        
+        // Additional Safari-specific fixes
+        if (window.safari || /^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+            // Force grid recalculation
+            grid.style.gridTemplateColumns = 'repeat(15, 1fr)';
+            grid.style.gridTemplateRows = 'repeat(15, 1fr)';
+        }
+    }
+}
+
 // Fullscreen API functions
 function enterFullscreen() {
     const elem = document.documentElement;
@@ -1229,6 +1265,9 @@ function enterFullscreen() {
     } else if (elem.mozRequestFullScreen) { // Firefox
         elem.mozRequestFullScreen();
     }
+    
+    // Refresh grid layout after fullscreen change (Safari fix)
+    setTimeout(refreshGridLayout, 100);
 }
 
 function exitFullscreen() {
@@ -1241,6 +1280,9 @@ function exitFullscreen() {
     } else if (document.mozCancelFullScreen) { // Firefox
         document.mozCancelFullScreen();
     }
+    
+    // Refresh grid layout after fullscreen change (Safari fix)
+    setTimeout(refreshGridLayout, 100);
 }
 
 // Custom Modal System
@@ -1347,16 +1389,19 @@ function hideCustomModal() {
 }
 
 // Replacement functions for browser dialogs
-function showAlert(message, title = 'Melding') {
-    return showCustomModal(title, message, 'alert');
+function showAlert(message, title = null) {
+    const modalTitle = title || getText('modalAlert');
+    return showCustomModal(modalTitle, message, 'alert');
 }
 
-function showPrompt(message, defaultValue = '', title = 'Invoer') {
-    return showCustomModal(title, message, 'prompt', defaultValue);
+function showPrompt(message, defaultValue = '', title = null) {
+    const modalTitle = title || getText('modalPrompt');
+    return showCustomModal(modalTitle, message, 'prompt', defaultValue);
 }
 
-function showConfirm(message, title = 'Bevestiging') {
-    return showCustomModal(title, message, 'confirm');
+function showConfirm(message, title = null) {
+    const modalTitle = title || getText('modalConfirm');
+    return showCustomModal(modalTitle, message, 'confirm');
 }
 
 // Bij laden van de pagina
@@ -1389,5 +1434,16 @@ window.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
+    });
+    
+    // Safari fullscreen change listeners for grid refresh
+    document.addEventListener('fullscreenchange', refreshGridLayout);
+    document.addEventListener('webkitfullscreenchange', refreshGridLayout);
+    document.addEventListener('mozfullscreenchange', refreshGridLayout);
+    document.addEventListener('msfullscreenchange', refreshGridLayout);
+    
+    // Additional resize listener for Safari orientation changes
+    window.addEventListener('resize', function() {
+        setTimeout(refreshGridLayout, 50);
     });
 });
