@@ -184,7 +184,7 @@ function renderTeamsList() {
         if (!el) {
             el = createTeamElement(team, index);
         }
-        // Update content (rank, punten, pogingen, active)
+        // Update content (rank, teamnaam, punten, pogingen, active)
         const rankElement = el.querySelector('.team-rank');
         if (rankElement) {
             let rankText = `${index + 1}`;
@@ -193,6 +193,8 @@ function renderTeamsList() {
             else if (index === 2) rankText = '🥉';
             rankElement.textContent = rankText;
         }
+        const teamNameElement = el.querySelector('.team-name');
+        if (teamNameElement) teamNameElement.textContent = team.name;
         const pointsElement = el.querySelector('.points-value');
         if (pointsElement) pointsElement.textContent = team.points;
         const attemptsElement = el.querySelector('.team-attempts');
