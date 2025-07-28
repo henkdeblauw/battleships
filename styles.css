@@ -693,9 +693,20 @@ button:hover {
   color: white;
 }
 
-.ship-size {
+.ship-details {
+  display: flex;
+  gap: 15px;
   font-size: 12px;
   color: #ccc;
+}
+
+.ship-size {
+  color: #ccc;
+}
+
+.ship-points {
+  color: #bfd601;
+  font-weight: 600;
 }
 
 .ship-count-controls {

@@ -49,6 +49,7 @@ const TRANSLATIONS = {
         ships: 'Schepen',
         startNewGame: 'Nieuw Spel Starten',
         size: 'Grootte:',
+        pointsWorth: 'Punten:',
 
         // Ship names
         aircraftCarrier: 'Vliegdekschip',
@@ -138,6 +139,7 @@ const TRANSLATIONS = {
         ships: 'Ships',
         startNewGame: 'Start New Game',
         size: 'Size:',
+        pointsWorth: 'Points:',
 
         // Ship names
         aircraftCarrier: 'Aircraft Carrier',
@@ -807,12 +809,16 @@ function populateShipSettings() {
     container.innerHTML = '';
 
     settings.ships.forEach((ship, index) => {
+        const points = calculateShipPoints(ship.size);
         const shipControl = document.createElement('div');
         shipControl.className = 'ship-control';
         shipControl.innerHTML = `
             <div class="ship-info">
                 <div class="ship-name">${getText(ship.name)}</div>
-                <div class="ship-size">${getText('size')} ${ship.size}</div>
+                <div class="ship-details">
+                    <span class="ship-size">${getText('size')} ${ship.size}</span>
+                    <span class="ship-points">${getText('pointsWorth')} ${points}</span>
+                </div>
             </div>
             <div class="ship-count-controls">
                 <button class="count-btn" onclick="changeShipCount(${index}, -1)">-</button>
@@ -930,6 +936,20 @@ async function fullReset() {
 
         showAlert(getText('fullResetCompleted'));
     }
+}
+
+// Calculate points for a ship based on reverse scoring
+function calculateShipPoints(shipSize) {
+    // Get all unique ship sizes and sort them
+    const allSizes = [...new Set(settings.ships.map(ship => ship.size))].sort((a, b) => a - b);
+    const sizeToPoints = {};
+    
+    // Map each size to its reverse points (biggest ship gets smallest points)
+    allSizes.forEach((size, index) => {
+        sizeToPoints[size] = allSizes[allSizes.length - 1 - index];
+    });
+    
+    return sizeToPoints[shipSize] || shipSize;
 }
 
 // Close modals when clicking outside
@@ -1086,10 +1106,11 @@ function handleClick(row, col) {
                 shipCell.textContent = '🔥';
             });
 
-            // Voeg bonus punten toe voor gezonken schip (gelijk aan grootte van schip)
-            addPointsToCurrentTeam(ship.size);
+            // Voeg bonus punten toe voor gezonken schip (omgekeerde puntentelling)
+            const bonusPoints = calculateShipPoints(ship.size);
+            addPointsToCurrentTeam(bonusPoints);
             const shipName = getText(ship.name);
-            updateStatus(getText('teamSankShip', gameState.currentTeam.name, shipName, ship.size));
+            updateStatus(getText('teamSankShip', gameState.currentTeam.name, shipName, bonusPoints));
 
             // Check game over
             if (gameState.ships.every(s => s.hits === s.size)) {
